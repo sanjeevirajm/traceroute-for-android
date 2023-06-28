@@ -1,0 +1,88 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+    }
+
+    buildTypes {
+        release {
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+task generateSourcesJar(type: Jar) {
+    group = 'jar'
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+//    archives generateJavadoc
+    archives generateSourcesJar
+}
+
+//publish {
+//    userOrg = 'angelwangjing'
+//    groupId = 'com.wandroid'
+//    artifactId = 'traceroute-for-android'
+//    publishVersion = '1.0.1'
+//    desc = 'traceroute with jni on android'
+//    website = 'https://github.com/wangjing53406/traceroute-for-android'
+//}
+
+//afterEvaluate {
+//    publishing {
+//        publications {
+//// Creates a Maven publication called "release"
+//            release(MavenPublication) {
+//                from components.release
+//// You can then customize attributes of the publication as shown below.
+//                groupId = 'com.sanjeevirajm'
+//                artifactId = 'traceroute-for-android'
+//                version = '1.0.2'
+//            }
+//        }
+//    }
+//}
+
+afterEvaluate {
+    android.libraryVariants.each { variant ->
+        publishing.publications.create(variant.name, MavenPublication) {
+            from components.findByName(variant.name)
+            groupId = 'com.sanjeevirajm.traceroute-for-android'
+            artifactId = "traceroute-for-android"
+            version = '1.0.3'
+        }
+    }
+}
