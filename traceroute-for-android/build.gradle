@@ -53,21 +53,11 @@ dependencies {
 
 afterEvaluate {
     android.libraryVariants.each { variant ->
-        // Create variant-specific sources jar
-        def sourcesJarTask = tasks.register("${variant.name}SourcesJar", Jar) {
-            from android.sourceSets.main.java.srcDirs
-            archiveClassifier = 'sources'
-            archiveAppendix = variant.name
-        }
-        
         publishing.publications.create(variant.name, MavenPublication) {
             from components.findByName(variant.name)
             groupId = 'com.sanjeevirajm.traceroute-for-android'
             artifactId = "traceroute-for-android"
-            version = '1.0.4'
-            
-            // Add variant-specific sources jar
-            artifact sourcesJarTask
+            version = '1.0.9'
         }
     }
 }
