@@ -57,11 +57,6 @@ tasks.register('generateSourcesJar', Jar) {
     archiveClassifier = 'sources'
 }
 
-artifacts {
-//    archives generateJavadoc
-    archives generateSourcesJar
-}
-
 //publish {
 //    userOrg = 'angelwangjing'
 //    groupId = 'com.wandroid'
