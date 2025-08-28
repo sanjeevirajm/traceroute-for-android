@@ -93,6 +93,9 @@ afterEvaluate {
             groupId = 'com.sanjeevirajm.traceroute-for-android'
             artifactId = "traceroute-for-android"
             version = '1.0.4'
+            
+            // Add sources jar with explicit dependency
+            artifact generateSourcesJar
         }
     }
 }
