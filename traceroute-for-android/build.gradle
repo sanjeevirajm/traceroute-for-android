@@ -51,46 +51,23 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
-tasks.register('generateSourcesJar', Jar) {
-    group = 'jar'
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier = 'sources'
-}
-
-//publish {
-//    userOrg = 'angelwangjing'
-//    groupId = 'com.wandroid'
-//    artifactId = 'traceroute-for-android'
-//    publishVersion = '1.0.1'
-//    desc = 'traceroute with jni on android'
-//    website = 'https://github.com/wangjing53406/traceroute-for-android'
-//}
-
-//afterEvaluate {
-//    publishing {
-//        publications {
-//// Creates a Maven publication called "release"
-//            release(MavenPublication) {
-//                from components.release
-//// You can then customize attributes of the publication as shown below.
-//                groupId = 'com.sanjeevirajm'
-//                artifactId = 'traceroute-for-android'
-//                version = '1.0.2'
-//            }
-//        }
-//    }
-//}
-
 afterEvaluate {
     android.libraryVariants.each { variant ->
+        // Create variant-specific sources jar
+        def sourcesJarTask = tasks.register("${variant.name}SourcesJar", Jar) {
+            from android.sourceSets.main.java.srcDirs
+            archiveClassifier = 'sources'
+            archiveAppendix = variant.name
+        }
+        
         publishing.publications.create(variant.name, MavenPublication) {
             from components.findByName(variant.name)
             groupId = 'com.sanjeevirajm.traceroute-for-android'
             artifactId = "traceroute-for-android"
             version = '1.0.4'
             
-            // Add sources jar with explicit dependency
-            artifact generateSourcesJar
+            // Add variant-specific sources jar
+            artifact sourcesJarTask
         }
     }
 }
